@@ -1,0 +1,110 @@
+.wam-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+/* 🔝 topbar */
+.wam-topbar {
+  width: 100%;
+  max-width: 360px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#wam-back {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+}
+
+#wam-back:hover {
+  color: white;
+}
+
+#wam-score {
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+/* 🎮 board */
+.wam-board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 12px;
+}
+
+/* 🕳️ agujero base */
+.wam-hole {
+  width: 100px;
+  height: 100px;
+
+  background: #1e1e1e;
+  border-radius: 50%;
+
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 🐹 topo animado */
+.wam-hole::after {
+  content: "";
+
+  position: absolute;
+  bottom: -100%;
+  left: 50%;
+
+  width: 60px;
+  height: 60px;
+
+  background: #ff5252;
+  border-radius: 50%;
+
+  transform: translateX(-50%) scale(0.5);
+  transition: all 0.25s ease;
+}
+
+/* aparece */
+.wam-hole.active::after {
+  bottom: 20px;
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* 💥 golpe */
+.wam-hole.hit::after {
+  background: #4caf50;
+  transform: translateX(-50%) scale(0.8);
+}
+
+/* 🎛️ botones */
+.wam-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.wam-controls button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+
+  background: #222;
+  color: white;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.wam-controls button:hover {
+  transform: scale(1.05);
+  background: #333;
+}
+
+/* 📝 mensaje */
+#wam-message {
+  font-weight: bold;
+}

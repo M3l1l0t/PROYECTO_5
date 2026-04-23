@@ -1,0 +1,93 @@
+.ttt-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🔙 Botón volver */
+#ttt-back {
+  align-self: flex-start;
+  margin-bottom: 15px;
+
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#ttt-back:hover {
+  color: white;
+}
+
+/* TABLERO */
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 110px);
+  gap: 12px;
+
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.ttt-cell {
+  width: 110px;
+  height: 110px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 2.5rem;
+  font-weight: bold;
+
+  background: #1e1e1e;
+  border-radius: 12px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ttt-cell:hover {
+  background: #2c2c2c;
+  transform: scale(1.05);
+}
+
+/* 🏆 ganador */
+.ttt-cell.winner {
+  background: #4caf50;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #4caf50;
+}
+
+/* 📝 mensaje */
+#ttt-message {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 🔄 restart */
+#ttt-reset {
+  margin-top: 30px;
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #4caf50;
+  color: white;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#ttt-reset:hover {
+  background: #45a049;
+  transform: scale(1.05);
+}
