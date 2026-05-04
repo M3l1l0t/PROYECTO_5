@@ -3,79 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Mini Arcade Games</title>
 
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f0f0f;
-        color: white;
-      }
+    <!-- SEO -->
+    <meta name="description" content="Mini Arcade Games: Snake, Tic Tac Toe and Whac-A-Mole built with JavaScript." />
+    <meta name="keywords" content="arcade, games, snake, tic tac toe, whac a mole, javascript" />
+    <meta name="Paloma" content="Mini Arcade Project" />
 
-      /* MENÚ ARCADE */
-      .menu {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        text-align: center;
-        background: radial-gradient(circle at top, #1a1a1a, #000);
-      }
-
-      .title {
-        font-size: 3rem;
-        margin-bottom: 10px;
-      }
-
-      .subtitle {
-        opacity: 0.7;
-        margin-bottom: 30px;
-      }
-
-      .menu-buttons {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .menu-buttons button {
-        padding: 15px 20px;
-        font-size: 1rem;
-
-        border-radius: 12px;
-        border: none;
-        cursor: pointer;
-
-        background: #222;
-        color: white;
-
-        transition: 0.2s;
-      }
-
-      .menu-buttons button:hover {
-        transform: scale(1.1);
-        background: #333;
-      }
-
-      /* APP */
-      #app {
-        display: none;
-        padding: 20px;
-        min-height: 100vh;
-
-        justify-content: center;
-        align-items: center;
-      }
-    </style>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
 
   <body>
-
-    <!-- MENÚ PRINCIPAL -->
+    <!-- MENÚ -->
     <div id="menu" class="menu">
       <h1 class="title">🎮 MINI ARCADE 🎮</h1>
       <p class="subtitle">Choose a game</p>
@@ -87,11 +27,9 @@
       </div>
     </div>
 
-    <!-- JUEGOS -->
+    <!-- APP -->
     <div id="app"></div>
 
-    <!-- VITE ENTRY -->
     <script type="module" src="/src/main.js"></script>
-
   </body>
 </html>

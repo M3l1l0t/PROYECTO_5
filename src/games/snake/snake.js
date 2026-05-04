@@ -1,72 +1,69 @@
 import "./snake.css"
+import { createButton } from "../../components/createButton.js"
+import { createTopbar } from "../../components/createTopbar.js"
+import { createScoreboard } from "../../components/createScoreboard.js"
+
 export function initSnake(container) {
-  container.innerHTML = `
-    <div class="snake-container">
-
-      <div class="snake-topbar">
-        <button id="snake-back">← Back</button>
-        <div>
-          <div id="snake-score">Score: 0</div>
-          <div id="snake-highscore">High Score: 0</div>
-        </div>
-      </div>
-
-      <canvas id="snake-canvas" width="330" height="330"></canvas>
-
-      <div id="snake-message"></div>
-
-      <div class="snake-controls">
-        <button id="snake-start">Start</button>
-        <button id="snake-restart">Restart</button>
-      </div>
-
-    </div>
-  `
-
-  const canvas = container.querySelector("#snake-canvas")
-  const ctx = canvas.getContext("2d")
-
-  const scoreEl = container.querySelector("#snake-score")
-  const highScoreEl = container.querySelector("#snake-highscore")
-  const messageEl = container.querySelector("#snake-message")
-
-  const startBtn = container.querySelector("#snake-start")
-  const restartBtn = container.querySelector("#snake-restart")
-  const backBtn = container.querySelector("#snake-back")
+  container.replaceChildren()
 
   let snake, food, dx, dy, interval
   let running = false
   let score = 0
 
   let highScore = Number(localStorage.getItem("snakeHighScore")) || 0
-  highScoreEl.textContent = `High Score: ${highScore}`
 
-  function initGame() {
-    snake = [{ x: 150, y: 150 }]
-    food = randomFood()
-    dx = 10
-    dy = 0
-    score = 0
+  const wrapper = document.createElement("div")
+  wrapper.className = "snake-container"
 
-    scoreEl.textContent = "Score: 0"
-    messageEl.textContent = ""
+  const scoreBox = createScoreboard([
+    { key: "Score", label: "Score" },
+    { key: "High Score", label: "High Score" }
+  ])
+
+  function updateScoreUI() {
+    scoreBox.update({ score, highScore })
   }
 
+  const backBtn = createButton("← Back", "btn-ghost", () => {
+    stopGame()
+    document.removeEventListener("keydown", handleKey)
+    container.replaceChildren()
+    document.querySelector("#menu").style.display = "flex"
+  })
+
+  const topbar = createTopbar({
+    left: backBtn,
+    right: scoreBox.el
+  })
+
+  const canvas = document.createElement("canvas")
+const size = Math.min(330, window.innerWidth - 40)
+canvas.width = size
+canvas.height = size
+
+const ctx = canvas.getContext("2d")
+
+  const message = document.createElement("div")
+
   function randomFood() {
-    return {
-      x: Math.floor(Math.random() * 33) * 10,
-      y: Math.floor(Math.random() * 33) * 10
-    }
+    let f
+    do {
+      f = {
+        x: Math.floor(Math.random() * 33) * 10,
+        y: Math.floor(Math.random() * 33) * 10
+      }
+    } while (snake.some(s => s.x === f.x && s.y === f.y))
+    return f
   }
 
   function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.clearRect(0,0,canvas.width,canvas.height)
 
     ctx.fillStyle = "#4caf50"
-    snake.forEach(p => ctx.fillRect(p.x, p.y, 10, 10))
+    snake.forEach(p => ctx.fillRect(p.x,p.y,10,10))
 
-    ctx.fillStyle = "red"
-    ctx.fillRect(food.x, food.y, 10, 10)
+    ctx.fillStyle = "#ff5252"
+    ctx.fillRect(food.x,food.y,10,10)
   }
 
   function update() {
@@ -85,60 +82,76 @@ export function initSnake(container) {
 
     if (head.x === food.x && head.y === food.y) {
       score++
-      scoreEl.textContent = `Score: ${score}`
       food = randomFood()
     } else {
       snake.pop()
     }
 
+    updateScoreUI()
     draw()
   }
 
   function startGame() {
     if (running) return
-    initGame()
+
+    snake = [{ x: 150, y: 150 }]
+    dx = 10
+    dy = 0
+    score = 0
+
+    food = randomFood()
+
     running = true
     interval = setInterval(update, 100)
+
+    updateScoreUI()
+  }
+
+  function stopGame() {
+    running = false
+    clearInterval(interval)
   }
 
   function gameOver() {
-    clearInterval(interval)
-    running = false
+    stopGame()
 
     if (score > highScore) {
       highScore = score
       localStorage.setItem("snakeHighScore", highScore)
-      highScoreEl.textContent = `High Score: ${highScore}`
-      messageEl.textContent = "New High Score! 🏆"
-    } else {
-      messageEl.textContent = "Game Over 💀"
     }
+
+    message.textContent = "Game Over 💀"
+    updateScoreUI()
   }
 
-  document.addEventListener("keydown", e => {
+  const startBtn = createButton("Start", "btn-primary", startGame)
+  const restartBtn = createButton("Restart", "btn-primary", () => {
+    stopGame()
+    startGame()
+  })
+
+  const controls = document.createElement("div")
+  controls.className = "snake-controls"
+  controls.append(startBtn, restartBtn)
+
+  function handleKey(e) {
     if (!running) return
 
     if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -10 }
     if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 10 }
     if (e.key === "ArrowLeft" && dx === 0) { dx = -10; dy = 0 }
     if (e.key === "ArrowRight" && dx === 0) { dx = 10; dy = 0 }
-  })
+  }
 
-  startBtn.addEventListener("click", startGame)
+  document.addEventListener("keydown", handleKey)
+const canvasWrapper = document.createElement("div")
+canvasWrapper.className = "snake-canvas-wrapper"
 
-  restartBtn.addEventListener("click", () => {
-    clearInterval(interval)
-    running = false
-    startGame()
-  })
+canvasWrapper.appendChild(canvas)
 
-  backBtn.addEventListener("click", () => {
-    clearInterval(interval)
-    running = false
-    container.style.display = "none"
-    document.getElementById("menu").style.display = "flex"
-  })
+wrapper.append(topbar, canvasWrapper, message, controls)
+  container.appendChild(wrapper)
 
-  initGame()
+  updateScoreUI()
   draw()
 }

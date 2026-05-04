@@ -1,3 +1,6 @@
+/* =========================
+   CONTAINER
+========================= */
 .snake-container {
   display: flex;
   flex-direction: column;
@@ -5,81 +8,54 @@
   gap: 15px;
 }
 
-/* 🔝 barra superior */
+/* =========================
+   TOPBAR
+   👉 viene de createTopbar
+========================= */
 .snake-topbar {
   width: 100%;
   max-width: 360px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* 🔙 botón back */
-#snake-back {
-  background: transparent;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
+/* SCORE (createScoreboard) */
+.snake-scorebox {
   font-size: 14px;
+  color: var(--muted);
+  text-align: right;
 }
 
-#snake-back:hover {
-  color: white;
+/* =========================
+   CANVAS WRAPPER
+========================= */
+.snake-canvas-wrapper {
+  display: inline-block;
+
+  padding: 16px;
+
+  background: #0d0d0d;
+  border: 2px solid rgba(76, 175, 80, 0.35);
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 0 25px rgba(0,0,0,0.8),
+    0 0 20px rgba(76,175,80,0.2);
 }
 
-/* 🧠 score */
-#snake-score {
-  font-weight: bold;
-  opacity: 0.8;
-}
-
-/* 🎮 canvas con glow */
+/* CANVAS */
 #snake-canvas {
-  background: radial-gradient(circle, #111, #000);
-  border-radius: 15px;
-  box-shadow: 
-    0 0 20px rgba(0,0,0,0.8),
-    0 0 10px rgba(76,175,80,0.2);
-}
+  display: block;
 
-/* 🎛️ controles */
-.snake-controls {
-  display: flex;
-  gap: 10px;
-}
+  width: var(--canvas-size);
+  height: var(--canvas-size);
+  max-width: 330px;
 
-/* botones */
-.snake-controls button {
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
+  background: black;
 
-  background: #222;
-  color: white;
-  font-weight: bold;
+  border-radius: 12px;
 
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.snake-controls button:hover {
-  transform: scale(1.08);
-  background: #333;
-}
-
-/* botón principal */
-#snake-start {
-  background: #4caf50;
-}
-
-#snake-start:hover {
-  background: #45a049;
-}
-
-/* 💀 game over */
-#snake-message {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 5px;
+  border: 1px solid rgba(255,255,255,0.08);
 }

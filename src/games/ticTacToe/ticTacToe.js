@@ -1,37 +1,133 @@
 import "./ticTacToe.css"
+import { createButton } from "../../components/createButton.js"
+import { createTopbar } from "../../components/createTopbar.js"
+import { createScoreboard } from "../../components/createScoreboard.js"
 
 export function initTicTacToe(container) {
-  container.innerHTML = `
-    <div class="ttt-container">
+  container.replaceChildren()
 
-      <button id="ttt-back">← Back</button>
-
-      <div class="ttt-board">
-        ${Array(9).fill("").map(() => `<div class="ttt-cell"></div>`).join("")}
-      </div>
-
-      <div>
-        <div id="ttt-message"></div>
-        <div id="ttt-highscore">Best: 0</div>
-      </div>
-
-      <button id="ttt-reset">Restart</button>
-
-    </div>
-  `
-
-  const cells = container.querySelectorAll(".ttt-cell")
-  const message = container.querySelector("#ttt-message")
-  const highScoreEl = container.querySelector("#ttt-highscore")
-
+  // =====================
+  // STATE
+  // =====================
   let turn = "X"
   let gameOver = false
 
-  let highScore = Number(localStorage.getItem("tttHighScore")) || 0
-  highScoreEl.textContent = `Best: ${highScore}`
+  let scores = JSON.parse(localStorage.getItem("tttScores")) || {
+    X: 0,
+    O: 0,
+    draws: 0
+  }
 
+  // =====================
+  // ROOT
+  // =====================
+  const wrapper = document.createElement("div")
+  wrapper.className = "ttt-container"
+
+  // =====================
+  // SCOREBOARD (reutilizable)
+  // =====================
+  const scoreboard = createScoreboard([
+    { key: "X", label: "X" },
+    { key: "O", label: "O" },
+    { key: "Draws", label: "Draws" }
+  ])
+
+  function updateScore() {
+    scoreboard.update(scores)
+  }
+
+  updateScore()
+
+  // =====================
+  // BACK BUTTON
+  // =====================
+  const backBtn = createButton("← Back", "btn-ghost", () => {
+    container.replaceChildren()
+    document.querySelector("#menu").style.display = "flex"
+  })
+
+  // =====================
+  // TOPBAR
+  // =====================
+  const topbar = createTopbar({
+    left: backBtn,
+    right: scoreboard.el
+  })
+
+  // =====================
+  // BOARD
+  // =====================
+  const board = document.createElement("div")
+  board.className = "ttt-board"
+
+  const cells = []
+
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div")
+    cell.className = "ttt-cell"
+
+    cell.addEventListener("click", () => {
+      if (cell.textContent || gameOver) return
+
+      cell.textContent = turn
+
+      const result = checkWinner()
+
+      if (result) {
+        result.line.forEach(i => cells[i].classList.add("winner"))
+
+        scores[result.player]++
+        gameOver = true
+        message.textContent = `${result.player} wins 🎉`
+        save()
+        updateScore()
+        return
+      }
+
+      if (isDraw()) {
+        scores.draws++
+        gameOver = true
+        message.textContent = "Draw 🤝"
+        save()
+        updateScore()
+        return
+      }
+
+      turn = turn === "X" ? "O" : "X"
+    })
+
+    cells.push(cell)
+    board.appendChild(cell)
+  }
+
+  // =====================
+  // MESSAGE
+  // =====================
+  const message = document.createElement("div")
+  message.id = "ttt-message"
+
+  // =====================
+  // RESET
+  // =====================
+  const resetBtn = createButton("Restart", "btn-primary", reset)
+
+  function reset() {
+    cells.forEach(c => {
+      c.textContent = ""
+      c.classList.remove("winner")
+    })
+
+    turn = "X"
+    gameOver = false
+    message.textContent = ""
+  }
+
+  // =====================
+  // LOGIC
+  // =====================
   function getBoard() {
-    return Array.from(cells).map(c => c.textContent)
+    return cells.map(c => c.textContent)
   }
 
   function checkWinner() {
@@ -43,48 +139,26 @@ export function initTicTacToe(container) {
       [0,4,8],[2,4,6]
     ]
 
-    for (let p of patterns) {
-      const [a,b1,c] = p
-      if (b[a] && b[a] === b[b1] && b[a] === b[c]) return b[a]
+    for (const [a,b1,c] of patterns) {
+      if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
+        return { player: b[a], line: [a,b1,c] }
+      }
     }
 
     return null
   }
 
-  cells.forEach(cell => {
-    cell.addEventListener("click", () => {
-      if (cell.textContent || gameOver) return
+  function isDraw() {
+    return getBoard().every(c => c !== "")
+  }
 
-      cell.textContent = turn
+  function save() {
+    localStorage.setItem("tttScores", JSON.stringify(scores))
+  }
 
-      const winner = checkWinner()
-
-      if (winner) {
-        message.textContent = `${winner} wins! 🎉`
-
-        if (winner === "X") {
-          highScore++
-          localStorage.setItem("tttHighScore", highScore)
-          highScoreEl.textContent = `Best: ${highScore}`
-        }
-
-        gameOver = true
-        return
-      }
-
-      turn = turn === "X" ? "O" : "X"
-    })
-  })
-
-  container.querySelector("#ttt-reset").addEventListener("click", () => {
-    cells.forEach(c => c.textContent = "")
-    turn = "X"
-    gameOver = false
-    message.textContent = ""
-  })
-
-  container.querySelector("#ttt-back").addEventListener("click", () => {
-    container.style.display = "none"
-    document.getElementById("menu").style.display = "flex"
-  })
+  // =====================
+  // RENDER
+  // =====================
+  wrapper.append(topbar, board, message, resetBtn)
+  container.appendChild(wrapper)
 }

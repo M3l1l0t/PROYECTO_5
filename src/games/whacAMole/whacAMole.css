@@ -1,3 +1,6 @@
+/* =========================
+   CONTAINER
+========================= */
 .wam-container {
   display: flex;
   flex-direction: column;
@@ -5,7 +8,9 @@
   gap: 15px;
 }
 
-/* 🔝 topbar */
+/* =========================
+   TOPBAR (createTopbar)
+========================= */
 .wam-topbar {
   width: 100%;
   max-width: 360px;
@@ -15,43 +20,34 @@
   align-items: center;
 }
 
-#wam-back {
-  background: transparent;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-}
-
-#wam-back:hover {
-  color: white;
-}
-
-#wam-score {
-  font-weight: bold;
-  opacity: 0.8;
-}
-
-/* 🎮 board */
+/* =========================
+   BOARD (RESPONSIVE FIX)
+========================= */
 .wam-board {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  gap: 12px;
+  grid-template-columns: repeat(3, var(--cell-size));
+  gap: 10px;
 }
 
-/* 🕳️ agujero base */
+/* =========================
+   HOLES
+========================= */
 .wam-hole {
-  width: 100px;
-  height: 100px;
+  width: var(--cell-size);
+  height: var(--cell-size);
 
-  background: #1e1e1e;
   border-radius: 50%;
+  background: #1e1e1e;
 
   position: relative;
   overflow: hidden;
+
   cursor: pointer;
+
+  transition: transform 0.15s ease;
 }
 
-/* 🐹 topo animado */
+/* MOLE */
 .wam-hole::after {
   content: "";
 
@@ -59,8 +55,8 @@
   bottom: -100%;
   left: 50%;
 
-  width: 60px;
-  height: 60px;
+  width: 60%;
+  height: 60%;
 
   background: #ff5252;
   border-radius: 50%;
@@ -69,42 +65,31 @@
   transition: all 0.25s ease;
 }
 
-/* aparece */
+/* ACTIVE MOLE */
 .wam-hole.active::after {
-  bottom: 20px;
+  bottom: 20%;
   transform: translateX(-50%) scale(1.1);
 }
 
-/* 💥 golpe */
+/* HIT STATE */
 .wam-hole.hit::after {
-  background: #4caf50;
-  transform: translateX(-50%) scale(0.8);
+  background: var(--primary);
 }
 
-/* 🎛️ botones */
-.wam-controls {
-  display: flex;
-  gap: 10px;
+/* =========================
+   MOBILE FIX (IMPORTANTE)
+========================= */
+@media (hover: none) {
+  .wam-hole:hover {
+    transform: none;
+  }
 }
 
-.wam-controls button {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-
-  background: #222;
-  color: white;
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.wam-controls button:hover {
-  transform: scale(1.05);
-  background: #333;
-}
-
-/* 📝 mensaje */
-#wam-message {
-  font-weight: bold;
+/* =========================
+   SMALL SCREENS FIX
+========================= */
+@media (max-width: 400px) {
+  .wam-board {
+    gap: 8px;
+  }
 }
