@@ -30,7 +30,7 @@ export function initTicTacToe(container) {
   const scoreboard = createScoreboard([
     { key: "X", label: "X" },
     { key: "O", label: "O" },
-    { key: "Draws", label: "Draws" }
+    { key: "draws", label: "Draws" }
   ])
 
   function updateScore() {
