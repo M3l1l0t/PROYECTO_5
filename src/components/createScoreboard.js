@@ -3,12 +3,15 @@ export function createScoreboard(lines = []) {
   box.className = "scoreboard"
 
   const elements = {}
+  const labels = {}
 
   lines.forEach(line => {
     const el = document.createElement("div")
-    el.textContent = line.label + ": 0"
+    el.textContent = `${line.label}: 0`
     box.appendChild(el)
+
     elements[line.key] = el
+    labels[line.key] = line.label
   })
 
   return {
@@ -16,7 +19,7 @@ export function createScoreboard(lines = []) {
     update(data) {
       Object.keys(data).forEach(key => {
         if (elements[key]) {
-          elements[key].textContent = `${key}: ${data[key]}`
+          elements[key].textContent = `${labels[key]}: ${data[key]}`
         }
       })
     }
