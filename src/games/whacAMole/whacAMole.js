@@ -7,18 +7,25 @@ export function initWhacAMole(container) {
   container.replaceChildren()
 
   let score = 0
+  let highScore = Number(localStorage.getItem("wamHighScore")) || 0
+
   let activeIndex = null
   let running = false
-  let speed = 900
+  let speed = 1000
   let timeoutId = null
-  let highScore = Number(localStorage.getItem("wamHighScore")) || 0
+
+  let timeLeft = 30
+  let timerId = null
 
   const wrapper = document.createElement("div")
   wrapper.className = "wam-container"
 
+  const message = document.createElement("div")
+  message.className = "wam-message"
+
   const scoreboard = createScoreboard([
-    { key: "Score", label: "Score" },
-    { key: "High Score", label: "High Score" }
+    { key: "score", label: "Score" },
+    { key: "highScore", label: "High Score" }
   ])
 
   function updateUI() {
@@ -51,8 +58,22 @@ export function initWhacAMole(container) {
 
       if (i === activeIndex) {
         score++
-        activeIndex = null
         updateUI()
+
+        hole.classList.add("hit")
+
+        const pop = document.createElement("div")
+        pop.textContent = "+1"
+        pop.className = "wam-pop"
+        hole.appendChild(pop)
+
+        setTimeout(() => pop.remove(), 400)
+        setTimeout(() => hole.classList.remove("hit"), 150)
+
+        activeIndex = null
+
+        // dificultad controlada
+        speed = Math.max(700, speed - 10)
       }
     })
 
@@ -77,17 +98,46 @@ export function initWhacAMole(container) {
   function startGame() {
     if (running) return
 
-    speed = 900
     score = 0
+    speed = 1000
+    timeLeft = 30
     running = true
 
     updateUI()
+
+    message.textContent = `Time: ${timeLeft}s`
+
     loop()
+
+    timerId = setInterval(() => {
+      timeLeft--
+      message.textContent = `Time: ${timeLeft}s`
+
+      if (timeLeft <= 0) {
+        endGame()
+      }
+    }, 1000)
+  }
+
+  function endGame() {
+    running = false
+
+    clearTimeout(timeoutId)
+    clearInterval(timerId)
+
+    holes.forEach(h => h.classList.remove("active"))
+
+    saveHighScore()
+
+    message.textContent = `Game Over 💀 Score: ${score}`
+
+    updateUI()
   }
 
   function stopGame() {
     running = false
     clearTimeout(timeoutId)
+    clearInterval(timerId)
     holes.forEach(h => h.classList.remove("active"))
   }
 
@@ -108,7 +158,7 @@ export function initWhacAMole(container) {
   controls.className = "wam-controls"
   controls.append(startBtn, restartBtn)
 
-  wrapper.append(topbar, board, controls)
+  wrapper.append(topbar, board, message, controls)
   container.appendChild(wrapper)
 
   updateUI()
