@@ -47,6 +47,11 @@
   transition: transform 0.15s ease;
 }
 
+/* IMPORTANTE: para el +1 flotante */
+.wam-hole {
+  position: relative;
+}
+
 /* MOLE */
 .wam-hole::after {
   content: "";
@@ -71,13 +76,48 @@
   transform: translateX(-50%) scale(1.1);
 }
 
-/* HIT STATE */
+/* =========================
+   HIT FEEDBACK (CORREGIDO)
+========================= */
+.wam-hole.hit {
+  transform: scale(0.9);
+}
+
 .wam-hole.hit::after {
   background: var(--primary);
 }
 
 /* =========================
-   MOBILE FIX (IMPORTANTE)
+   +1 POP ANIMATION (NUEVO)
+========================= */
+.wam-pop {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+
+  pointer-events: none;
+
+  animation: pop 0.4s ease-out forwards;
+}
+
+@keyframes pop {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+}
+
+/* =========================
+   MOBILE FIX
 ========================= */
 @media (hover: none) {
   .wam-hole:hover {
