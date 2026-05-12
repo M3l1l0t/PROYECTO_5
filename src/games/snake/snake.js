@@ -16,8 +16,8 @@ export function initSnake(container) {
   wrapper.className = "snake-container"
 
   const scoreBox = createScoreboard([
-    { key: "Score", label: "Score" },
-    { key: "High Score", label: "High Score" }
+    { key: "score", label: "Score" },
+    { key: "highScore", label: "High Score" }
   ])
 
   function updateScoreUI() {
@@ -37,11 +37,11 @@ export function initSnake(container) {
   })
 
   const canvas = document.createElement("canvas")
-const size = Math.min(330, window.innerWidth - 40)
-canvas.width = size
-canvas.height = size
+  const size = Math.min(330, window.innerWidth - 40)
+  canvas.width = size
+  canvas.height = size
 
-const ctx = canvas.getContext("2d")
+  const ctx = canvas.getContext("2d")
 
   const message = document.createElement("div")
 
@@ -57,13 +57,13 @@ const ctx = canvas.getContext("2d")
   }
 
   function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     ctx.fillStyle = "#4caf50"
-    snake.forEach(p => ctx.fillRect(p.x,p.y,10,10))
+    snake.forEach(p => ctx.fillRect(p.x, p.y, 10, 10))
 
     ctx.fillStyle = "#ff5252"
-    ctx.fillRect(food.x,food.y,10,10)
+    ctx.fillRect(food.x, food.y, 10, 10)
   }
 
   function update() {
@@ -144,12 +144,13 @@ const ctx = canvas.getContext("2d")
   }
 
   document.addEventListener("keydown", handleKey)
-const canvasWrapper = document.createElement("div")
-canvasWrapper.className = "snake-canvas-wrapper"
 
-canvasWrapper.appendChild(canvas)
+  const canvasWrapper = document.createElement("div")
+  canvasWrapper.className = "snake-canvas-wrapper"
 
-wrapper.append(topbar, canvasWrapper, message, controls)
+  canvasWrapper.appendChild(canvas)
+
+  wrapper.append(topbar, canvasWrapper, message, controls)
   container.appendChild(wrapper)
 
   updateScoreUI()
